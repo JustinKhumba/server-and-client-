@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script>
+      const socket = io('http://localhost:3000');
+      const messages = document.getElementById('messages');
+
+      socket.on('connect', () => {
+        console.log('Connected to server');
+        document.getElementById('send-form').addEventListener('submit', (event) => {
+          event.preventDefault();
+          const message = document.getElementById('message').value;
+          socket.emit('message', message);
+          document.getElementById('message').value = '';
+        });
+      });
+
+      socket.on('message', (data) => {
+        const li = document.createElement('li');
+        li.textContent = data;
+        messages.appendChild(li);
+      });
+
+      socket.on('disconnect', () => {
+        console.log('Disconnected from server');
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Real-time Chat</h1>
+    <ul id="messages"></ul>
+    <form id="send-form">
+      <input id="message" placeholder="Enter message">
+      <button type="submit">Send</button>
+    </form>
+  </body>
+</html>
